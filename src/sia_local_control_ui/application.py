@@ -5,8 +5,6 @@ from pydoover.docker import Application
 from pydoover import ui
 
 from .app_config import SiaLocalControlUiConfig
-from .app_ui import SiaLocalControlUiUI
-from .app_state import SiaLocalControlUiState
 from .dashboard import SiaDashboard, DashboardInterface
 
 log = logging.getLogger()
@@ -18,8 +16,6 @@ class SiaLocalControlUiApplication(Application):
         super().__init__(*args, **kwargs)
 
         self.started: float = time.time()
-        self.ui: SiaLocalControlUiUI = None
-        self.state: SiaLocalControlUiState = None
         
         # Initialize dashboard
         self.dashboard = SiaDashboard(host="0.0.0.0", port=8091, debug=False)
@@ -45,9 +41,9 @@ class SiaLocalControlUiApplication(Application):
         """Update dashboard with data from various sources."""
         try:
             # Get pump control data from simulators
-            target_rate = self.get_tag("TargetRate", self.config.pump_controllers[0].value) if self.config.pump_controllers else 15.5
-            flow_rate = self.get_tag("FlowRate", self.config.pump_controllers[0].value) if self.config.pump_controllers else 14.2
-            pump_state = self.get_tag("StateString", self.config.pump_controllers[0].value) if self.config.pump_controllers else "auto"
+            target_rate = self.get_tag("TargetRate", self.config.pump_controllers.elements[0]) if self.config.pump_controllers else 15.5
+            flow_rate = self.get_tag("FlowRate", self.config.pump_controllers.elements[0]) if self.config.pump_controllers else 14.2
+            pump_state = self.get_tag("StateString", self.config.pump_controllers.elements[0]) if self.config.pump_controllers else "auto"
             
             # Update pump data
             self.dashboard_interface.update_pump_data(
@@ -57,10 +53,10 @@ class SiaLocalControlUiApplication(Application):
             )
             
             # Get pump 2 control data from simulators
-            if len(self.config.pump_controllers) > 1:
-                pump2_target_rate = self.get_tag("TargetRate", self.config.pump_controllers[1].value)
-                pump2_flow_rate = self.get_tag("FlowRate", self.config.pump_controllers[1].value)
-                pump2_pump_state = self.get_tag("StateString", self.config.pump_controllers[1].value)
+            if len(self.config.pump_controllers.elements) > 1:
+                pump2_target_rate = self.get_tag("TargetRate", self.config.pump_controllers.elements[1])
+                pump2_flow_rate = self.get_tag("FlowRate", self.config.pump_controllers.elements[1])
+                pump2_pump_state = self.get_tag("StateString", self.config.pump_controllers.elements[1])
             else:
                 # Fallback values for pump 2 if not configured
                 pump2_target_rate = "-"
@@ -82,11 +78,11 @@ class SiaLocalControlUiApplication(Application):
                 battery_ah_values = []
                 
                 # Collect data from all solar controllers
-                for solar_controller in self.config.solar_controllers:
-                    battery_voltages.append(self.get_tag("b_voltage", solar_controller.value))
-                    battery_percentages.append(self.get_tag("b_percent", solar_controller.value))
-                    panel_power_values.append(self.get_tag("panel_power", solar_controller.value))
-                    battery_ah_values.append(self.get_tag("remaining_ah", solar_controller.value))
+                for solar_controller in self.config.solar_controllers.elements:
+                    battery_voltages.append(self.get_tag("b_voltage", solar_controller))
+                    battery_percentages.append(self.get_tag("b_percent", solar_controller))
+                    panel_power_values.append(self.get_tag("panel_power", solar_controller))
+                    battery_ah_values.append(self.get_tag("remaining_ah", solar_controller))
                 
                 # Aggregate data: average voltages/percentages, sum battery_ah
                 battery_voltage = sum(battery_voltages) / len(battery_voltages)
@@ -109,8 +105,8 @@ class SiaLocalControlUiApplication(Application):
             )
             
             # Get tank control data from simulators
-            tank_level_mm = self.get_tag("tank_level_mm", self.config.tank_apps[0].value) if self.config.tank_apps else 1250.0
-            tank_level_percent = self.get_tag("tank_level_percent", self.config.tank_apps[0].value) if self.config.tank_apps else 62.5
+            tank_level_mm = self.get_tag("tank_level_mm", self.config.tank_level_app.value) if self.config.tank_apps else 1250.0
+            tank_level_percent = self.get_tag("tank_level_percent", self.config.tank_level_app.value) if self.config.tank_apps else 62.5
             
             # Update tank data
             self.dashboard_interface.update_tank_data(
