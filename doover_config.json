@@ -18,33 +18,73 @@
             "title": "Application Config",
             "type": "object",
             "properties": {
-                "digital_outputs_enabled": {
-                    "title": "Digital Outputs Enabled",
-                    "x-name": "digital_outputs_enabled",
+                "pump_controllers": {
+                    "title": "Pump Controllers",
+                    "x-name": "pump_controllers",
                     "x-hidden": false,
-                    "type": "boolean",
-                    "default": true
+                    "type": "array",
+                    "description": "List of pump controller applications",
+                    "items": {
+                        "format": "doover-application",
+                        "title": "Pump Controller",
+                        "x-name": "pump_controller",
+                        "x-hidden": false,
+                        "type": "string",
+                        "description": "A pump controller application"
+                    }
                 },
-                "a_funny_message": {
-                    "title": "A Funny Message",
-                    "x-name": "a_funny_message",
+                "solar_controllers": {
+                    "title": "Solar Controllers",
+                    "x-name": "solar_controllers",
                     "x-hidden": false,
-                    "type": "string"
+                    "type": "array",
+                    "description": "List of solar controller applications",
+                    "items": {
+                        "format": "doover-application",
+                        "title": "Solar Controller",
+                        "x-name": "solar_controller",
+                        "x-hidden": false,
+                        "type": "string",
+                        "description": "A solar controller application"
+                    }
                 },
-                "simulator_app_key": {
+                "flow_sensor_app": {
                     "format": "doover-application",
-                    "title": "Simulator App Key",
-                    "x-name": "simulator_app_key",
+                    "title": "Flow Sensor App",
+                    "x-name": "flow_sensor_app",
                     "x-hidden": false,
                     "type": "string",
-                    "description": "The app key for the simulator"
+                    "description": "A flow sensor application"
+                },
+                "pressure_sensor_app": {
+                    "format": "doover-application",
+                    "title": "Pressure Sensor App",
+                    "x-name": "pressure_sensor_app",
+                    "x-hidden": false,
+                    "type": "string",
+                    "description": "A pressure sensor application"
+                },
+                "tank_level_app": {
+                    "format": "doover-application",
+                    "title": "Tank Level App",
+                    "x-name": "tank_level_app",
+                    "x-hidden": false,
+                    "type": "string",
+                    "description": "The tank level application"
                 }
             },
             "additionalElements": true,
             "required": [
-                "a_funny_message",
-                "simulator_app_key"
+                "pump_controllers",
+                "solar_controllers",
+                "flow_sensor_app",
+                "pressure_sensor_app",
+                "tank_level_app"
             ]
-        }
+        },
+        "key": "c01f11da-53f8-4a22-ba00-8ffa1180cd92",
+        "code_repo_key": null,
+        "repo_branch": "main",
+        "staging_config": {}
     }
 }

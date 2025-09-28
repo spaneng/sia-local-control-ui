@@ -13,11 +13,3 @@ def test_config():
 
     config = SiaLocalControlUiConfig()
     assert isinstance(config.to_dict(), dict)
-
-def test_ui():
-    from sia_local_control_ui.app_ui import SiaLocalControlUiUI
-    assert SiaLocalControlUiUI
-
-def test_state():
-    from sia_local_control_ui.app_state import SiaLocalControlUiState
-    assert SiaLocalControlUiState
